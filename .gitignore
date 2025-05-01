@@ -400,3 +400,5 @@ FodyWeavers.xsd
 *.sln.iml
 /textforum/appsettings.json
 /textforum/appsettings.Development.json
+/textforum.api/appsettings.json
+/textforum.api/appsettings.Development.json
