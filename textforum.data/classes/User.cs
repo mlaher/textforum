@@ -20,6 +20,9 @@ namespace textforum.data.classes
         public DateTimeOffset CreatedDate { get; set; }
 
         public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public ICollection<PostLike> Likes { get; set; } = new List<PostLike>();
+        public ICollection<PostComment> Comments { get; set; } = new List<PostComment>();
+        public ICollection<PostTag> Tags { get; set; } = new List<PostTag>();
     }
 
 }

@@ -22,10 +22,8 @@ namespace textforum.data.classes
         
         public string Description { get; set; }
 
-        [ForeignKey(nameof(PostId))]
         public Post Post { get; set; }
 
-        [ForeignKey(nameof(UserId))]
         public User User { get; set; }
         [Required]
         public DateTimeOffset Timestamp { get; set; }

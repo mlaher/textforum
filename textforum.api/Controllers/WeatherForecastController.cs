@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using textforum.data.contexts;
 
 namespace textforum.api.Controllers
 {
@@ -12,9 +13,11 @@ namespace textforum.api.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        TextForumDatabaseContext _textForumDatabaseContext { get; set; }
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, TextForumDatabaseContext textForumDatabaseContext)
         {
+            _textForumDatabaseContext = textForumDatabaseContext;
             _logger = logger;
         }
 
