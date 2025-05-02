@@ -12,8 +12,8 @@ using textforum.data.contexts;
 namespace textforum.data.Migrations
 {
     [DbContext(typeof(TextForumDatabaseContext))]
-    [Migration("20250502121939_Initial")]
-    partial class Initial
+    [Migration("20250502141736_AddedIsModerator")]
+    partial class AddedIsModerator
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -149,6 +149,9 @@ namespace textforum.data.Migrations
 
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsModerator")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

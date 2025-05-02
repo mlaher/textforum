@@ -18,7 +18,7 @@ namespace textforum.data.classes
         public string Name { get; set; }
         public string LastName { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
-
+        public bool IsModerator { get; set; }
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         public ICollection<PostLike> Likes { get; set; } = new List<PostLike>();
         public ICollection<PostComment> Comments { get; set; } = new List<PostComment>();
