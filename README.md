@@ -7,3 +7,6 @@ The forum is a basic text system which has the capabilities to add posts, retrie
 
 ![alt text](<Stakeholder Onion Diagram Template (Copy).png>)
 
+# Database Structure
+
+![alt text](image.png)
