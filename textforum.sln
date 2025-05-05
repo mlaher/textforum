@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textforum.tests", "textforu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textforum.api", "textforum.api\textforum.api.csproj", "{6AFA055F-4571-4EB1-BB90-9938AD48327B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textforum.domain", "textforum.domain\textforum.domain.csproj", "{4283ECA9-D1D1-4FA4-BF3D-0E195C787668}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6AFA055F-4571-4EB1-BB90-9938AD48327B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AFA055F-4571-4EB1-BB90-9938AD48327B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AFA055F-4571-4EB1-BB90-9938AD48327B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4283ECA9-D1D1-4FA4-BF3D-0E195C787668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4283ECA9-D1D1-4FA4-BF3D-0E195C787668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4283ECA9-D1D1-4FA4-BF3D-0E195C787668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4283ECA9-D1D1-4FA4-BF3D-0E195C787668}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

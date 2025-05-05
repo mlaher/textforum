@@ -15,6 +15,9 @@ namespace textforum.data.classes
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long UserId { get; set; }
+        public string Email { get; set; }
+        public string PasswordHashed { get; set; }
+        public string Salt { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public DateTimeOffset CreatedDate { get; set; }

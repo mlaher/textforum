@@ -12,8 +12,8 @@ using textforum.data.contexts;
 namespace textforum.data.Migrations
 {
     [DbContext(typeof(TextForumDatabaseContext))]
-    [Migration("20250502141736_AddedIsModerator")]
-    partial class AddedIsModerator
+    [Migration("20250503184417_EmailPassword")]
+    partial class EmailPassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,6 +150,10 @@ namespace textforum.data.Migrations
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsModerator")
                         .HasColumnType("bit");
 
@@ -158,6 +162,14 @@ namespace textforum.data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHashed")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

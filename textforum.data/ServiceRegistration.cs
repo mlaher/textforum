@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using textforum.data.classes;
 using textforum.data.contexts;
 using textforum.data.repositories;
+using textforum.domain.interfaces;
 
 namespace textforum.data
 {

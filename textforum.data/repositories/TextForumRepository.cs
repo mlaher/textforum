@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using textforum.data.contexts;
+using textforum.domain.interfaces;
 
 namespace textforum.data.repositories
 {
@@ -17,6 +19,32 @@ namespace textforum.data.repositories
         {
             _textForumDatabaseContext = textForumDatabaseContext;
             _dbSet = textForumDatabaseContext.Set<T>();
+        }
+
+        public async Task<List<T>> ListAsync(Expression<Func<T, bool>> filter, Expression<Func<T, object>> orderBy, int pageNumber = 1, int pageSize = 10, bool orderByDirectionDescending = false)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (!orderByDirectionDescending)
+            {
+                query = _dbSet.OrderBy(orderBy);
+            }
+            else
+            {
+                query = _dbSet.OrderByDescending(orderBy);
+            }
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            var items = await query
+                            .Skip((pageNumber - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToListAsync();
+
+            return items;
         }
 
         public async Task<T?> GetAsync(params object[] keys)
