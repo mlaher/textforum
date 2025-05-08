@@ -14,11 +14,11 @@ namespace textforum.logic.services
 {
     public class UserService : IUserService
     {
-        ITextForumRepository<data.classes.User> _repository;
+        ITextForumRepository<data.classes.User> _userRepository;
 
-        public UserService(ITextForumRepository<data.classes.User> repository)
+        public UserService(ITextForumRepository<data.classes.User> userRepository)
         {
-            _repository = repository;
+            _userRepository = userRepository;
         }
 
         public async Task<bool> UserExists(string email)
@@ -33,7 +33,7 @@ namespace textforum.logic.services
 
             var passwordHashed = PasswordHashingHelper.GetPasswordHash(user.Password);
 
-            var result = await _repository.AddAsync(new data.classes.User()
+            var result = await _userRepository.AddAsync(new data.classes.User()
             {
                 Email = user.Email,
                 Name = user.Name,
@@ -75,7 +75,7 @@ namespace textforum.logic.services
 
         public async Task<domain.models.User> GetFromUserId(long userId)
         {
-            var result = await _repository.GetAsync(userId);
+            var result = await _userRepository.GetAsync(userId);
 
             if (result == null)
                 throw new InvalidOperationException("Error retrieving user");
@@ -85,7 +85,7 @@ namespace textforum.logic.services
 
         private async Task<data.classes.User?> searchByEmail(string email)
         {
-            var result = (await _repository.ListAsync(a => a.Email.ToLower() == email.ToLower(), b => b.CreatedDate, 1, 1, true)).FirstOrDefault();
+            var result = (await _userRepository.ListAsync(a => a.Email.ToLower() == email.ToLower(), b => b.CreatedDate, 1, 1, true)).FirstOrDefault();
 
             return result;
         }

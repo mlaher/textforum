@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using textforum.data.contexts;
 using textforum.domain.interfaces;
+using textforum.domain.models;
 
 namespace textforum.data.repositories
 {
@@ -65,6 +66,24 @@ namespace textforum.data.repositories
         {
             _dbSet.Update(entity);
             await _textForumDatabaseContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            await _textForumDatabaseContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCountAsync(Expression<Func<T, bool>> filter)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.CountAsync();
         }
     }
 }
