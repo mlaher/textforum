@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\textforum.data\textforum.data.csproj" />
+    <ProjectReference Include="..\textforum.logic\textforum.logic.csproj" />
   </ItemGroup>
 
 </Project>
