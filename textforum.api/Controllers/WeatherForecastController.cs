@@ -1,8 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using textforum.data.contexts;
+using textforum.domain.interfaces;
+using textforum.logic.filters;
+using textforum.logic.services;
 
 namespace textforum.api.Controllers
 {
+
+    [AppAuthAttribute]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -13,16 +18,15 @@ namespace textforum.api.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-        TextForumDatabaseContext _textForumDatabaseContext { get; set; }
+        private readonly IAppAuthenticationService _appAuthenticationService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, TextForumDatabaseContext textForumDatabaseContext)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
-            _textForumDatabaseContext = textForumDatabaseContext;
             _logger = logger;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<WeatherForecast> Get([FromHeader(Name = "X-Token")] string token, [FromHeader(Name = "X-Forwarded-For")] string ip, [FromHeader(Name = "X-Machine-Name")] string machineName)
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

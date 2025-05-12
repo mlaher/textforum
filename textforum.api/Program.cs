@@ -1,4 +1,9 @@
+using Microsoft.Extensions.Configuration;
 using textforum.data;
+using textforum.domain.interfaces;
+using textforum.domain.models;
+using textforum.logic.filters;
+using textforum.logic.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDataLayer(builder.Configuration);
+builder.Services.Configure<ValidApps>(builder.Configuration.GetSection("ValidApps"));
+builder.Services.AddSingleton<IAppAuthenticationService, AppAuthenticationService>();
 
 var app = builder.Build();
 
