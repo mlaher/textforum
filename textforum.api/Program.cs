@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDataLayer(builder.Configuration);
 builder.Services.Configure<ValidApps>(builder.Configuration.GetSection("ValidApps"));
 builder.Services.AddSingleton<IAppAuthenticationService, AppAuthenticationService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IUserAuthenticationService, UserAuthenticationService>();
 
 var app = builder.Build();
 

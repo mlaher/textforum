@@ -18,7 +18,7 @@ namespace textforum.logic.filters
                 _appAuthenticationService = context.HttpContext.RequestServices.GetService(typeof(IAppAuthenticationService)) as IAppAuthenticationService;
             }
 
-            var isValidToken = context.HttpContext.Request.Headers.TryGetValue("X-Token", out StringValues tokens);
+            var isValidToken = context.HttpContext.Request.Headers.TryGetValue("X-App-Token", out StringValues tokens);
             var token = tokens.FirstOrDefault();
 
             if (!isValidToken || string.IsNullOrWhiteSpace(token))
