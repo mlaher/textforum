@@ -8,7 +8,7 @@ using textforum.domain.models;
 
 namespace textforum.logic.services
 {
-    public class PostLikeService
+    public class PostLikeService : IPostLikeService
     {
         ITextForumRepository<data.classes.PostLike> _postLikeRepository;
 
@@ -21,7 +21,8 @@ namespace textforum.logic.services
         {
             var existingLike = await _postLikeRepository.GetAsync(postId, userId);
 
-            if (existingLike != null) {
+            if (existingLike != null)
+            {
                 await _postLikeRepository.DeleteAsync(existingLike);
             }
             else

@@ -8,20 +8,20 @@ using textforum.logic.services;
 
 namespace textforum.api.Controllers
 {
-    [UserAuth]
     [Route("api/[controller]")]
     [ApiController]
-    public class PostCommentsController : ControllerBase
+    public class PostTagsController : ControllerBase
     {
-        private readonly IPostCommentService _postCommentService;
+        private readonly IPostTagService _postTagService;
 
-        public PostCommentsController(IPostCommentService postCommentService)
+        public PostTagsController(IPostTagService postTagService)
         {
-            _postCommentService = postCommentService;
+            _postTagService = postTagService;
         }
 
-        [HttpGet("GetPostComments")]
-        public async Task<ActionResult<List<PostComment>>> GetPostsLikes([FromHeader(Name = "X-App-Token")] string appToken,
+        [UserAuth]
+        [HttpGet("GetPostTags")]
+        public async Task<ActionResult<List<PostTag>>> GetPostTags([FromHeader(Name = "X-App-Token")] string appToken,
             [FromHeader(Name = "X-Forwarded-For")] string ip,
             [FromHeader(Name = "X-Machine-Name")] string machineName,
             [FromHeader(Name = "X-User-Token")] string userToken,
@@ -29,19 +29,20 @@ namespace textforum.api.Controllers
             int? pageSize,
             long postId)
         {
-            return Ok(await _postCommentService.GetPostComments(postId, pageNumber, pageSize));
+            return Ok(await _postTagService.GetPostTags(postId, pageNumber, pageSize));
         }
 
-        [HttpPost("AddComment")]
-        public async Task<ActionResult<PostComment>> AddComment([FromHeader(Name = "X-App-Token")] string appToken,
+        [ModeratorAuth]
+        [HttpPost("AddPostTag")]
+        public async Task<ActionResult<PostTag>> AddPostTag([FromHeader(Name = "X-App-Token")] string appToken,
             [FromHeader(Name = "X-Forwarded-For")] string ip,
             [FromHeader(Name = "X-Machine-Name")] string machineName,
             [FromHeader(Name = "X-User-Token")] string userToken,
-            PostComment comment)
+            PostTag postTag)
         {
-            comment.UserId = HttpHelper.getUserId(this.HttpContext, comment.UserId);
+            postTag.UserId = HttpHelper.getUserId(this.HttpContext, postTag.UserId);
 
-            var result = await _postCommentService.CreateComment(comment);
+            var result = await _postTagService.AddPostTag(postTag);
 
             return Ok(result);
         }

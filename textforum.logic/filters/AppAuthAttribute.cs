@@ -11,7 +11,7 @@ namespace textforum.logic.filters
     {
         private IAppAuthenticationService _appAuthenticationService = null;
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public virtual void OnAuthorization(AuthorizationFilterContext context)
         {
             if (_appAuthenticationService == null)
             {

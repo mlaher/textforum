@@ -8,7 +8,7 @@ using textforum.domain.models;
 
 namespace textforum.logic.services
 {
-    public class PostCommentService
+    public class PostCommentService : IPostCommentService
     {
         ITextForumRepository<data.classes.PostComment> _postCommentRepository;
 
@@ -25,7 +25,7 @@ namespace textforum.logic.services
             if (pageNumber == null)
                 pageNumber = 1;
 
-            if(latestFirst == null)
+            if (latestFirst == null)
                 latestFirst = true;
 
             var result = await _postCommentRepository.ListAsync(x => x.PostId == postId, o => o.Timestamp, pageNumber.Value, pageSize.Value, latestFirst.Value);

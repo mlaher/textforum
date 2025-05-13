@@ -17,6 +17,10 @@ builder.Services.AddDataLayer(builder.Configuration);
 builder.Services.Configure<ValidApps>(builder.Configuration.GetSection("ValidApps"));
 builder.Services.AddSingleton<IAppAuthenticationService, AppAuthenticationService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IPostService, PostService>();
+builder.Services.AddTransient<IPostLikeService, PostLikeService>();
+builder.Services.AddTransient<IPostCommentService, PostCommentService>();
+builder.Services.AddTransient<IPostTagService, PostTagService>();
 builder.Services.AddTransient<IUserAuthenticationService, UserAuthenticationService>();
 
 var app = builder.Build();
