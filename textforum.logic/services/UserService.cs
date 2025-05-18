@@ -9,6 +9,8 @@ using textforum.data.repositories;
 using textforum.logic.helpers;
 using textforum.domain.models;
 using textforum.domain.interfaces;
+using textforum.domain.exceptions;
+using textforum.domain.errorEnums;
 
 namespace textforum.logic.services
 {
@@ -21,15 +23,15 @@ namespace textforum.logic.services
             _userRepository = userRepository;
         }
 
-        public async Task<bool> UserExists(string email)
+        public async Task<bool> UserExists(string email, string correlationId)
         {
-            return (await searchByEmail(email)) != null;
+            return (await searchByEmail(email, correlationId)) != null;
         }
 
-        public async Task<domain.models.User?> Register(domain.models.User user)
+        public async Task<domain.models.User?> Register(domain.models.User user, string correlationId)
         {
-            if (await UserExists(user.Email))
-                throw new InvalidOperationException("User already exists");
+            if (await UserExists(user.Email, correlationId))
+                throw new UserException(UserError.USER_EXISTS, correlationId);
 
             var passwordHashed = PasswordHashingHelper.GetPasswordHash(user.Password);
 
@@ -42,7 +44,7 @@ namespace textforum.logic.services
                 IsModerator = false,
                 PasswordHashed = passwordHashed.passwordHashed,
                 Salt = passwordHashed.passwordSalt
-            });
+            }, correlationId);
 
             if (result == null)
                 throw new InvalidOperationException("Error saving user");
@@ -50,9 +52,9 @@ namespace textforum.logic.services
             return mapDataUserToModelUser(result);
         }
 
-        public async Task<domain.models.User> GetFromCredentials(string email, string password)
+        public async Task<domain.models.User> GetFromCredentials(string email, string password, string correlationId)
         {
-            var result = await searchByEmail(email);
+            var result = await searchByEmail(email, correlationId);
 
             if (result == null)
                 throw new InvalidOperationException("Invalid username or password");
@@ -63,9 +65,9 @@ namespace textforum.logic.services
             return mapDataUserToModelUser(result);
         }
 
-        public async Task<domain.models.User> GetFromEmail(string email)
+        public async Task<domain.models.User> GetFromEmail(string email, string correlationId)
         {
-            var result = await searchByEmail(email);
+            var result = await searchByEmail(email, correlationId);
 
             if (result == null)
                 throw new InvalidOperationException("Error retrieving user");
@@ -73,9 +75,9 @@ namespace textforum.logic.services
             return mapDataUserToModelUser(result);
         }
 
-        public async Task<domain.models.User> GetFromUserId(long userId)
+        public async Task<domain.models.User> GetFromUserId(long userId, string correlationId)
         {
-            var result = await _userRepository.GetAsync(userId);
+            var result = await _userRepository.GetAsync(correlationId, userId);
 
             if (result == null)
                 throw new InvalidOperationException("Error retrieving user");
@@ -83,9 +85,9 @@ namespace textforum.logic.services
             return mapDataUserToModelUser(result);
         }
 
-        private async Task<data.classes.User?> searchByEmail(string email)
+        private async Task<data.classes.User?> searchByEmail(string email, string correlationId)
         {
-            var result = (await _userRepository.ListAsync(a => a.Email.ToLower() == email.ToLower(), b => b.CreatedDate, 1, 1, true)).FirstOrDefault();
+            var result = (await _userRepository.ListAsync(a => a.Email.ToLower() == email.ToLower(), b => b.CreatedDate, correlationId, 1, 1, true)).FirstOrDefault();
 
             return result;
         }

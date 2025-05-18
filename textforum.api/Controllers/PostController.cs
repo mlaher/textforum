@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using textforum.logic.helpers;
 using textforum.domain.interfaces;
 using textforum.domain.models;
 using textforum.logic.filters;
@@ -29,7 +30,7 @@ namespace textforum.api.Controllers
             DateTimeOffset startDate,  
             DateTimeOffset endDate)
         {
-            return Ok(await _postService.GetPosts(startDate, endDate, pageNumber, pageSize));
+            return Ok(await _postService.GetPosts(startDate, endDate, HttpContext.GetCorrelationId(), pageNumber, pageSize));
         }
 
         [HttpPost("CreatePost")]
@@ -39,7 +40,7 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-User-Token")] string userToken, 
             [FromBody] Post post)
         {
-            var result = await _postService.CreatePost(post);
+            var result = await _postService.CreatePost(post, HttpContext.GetCorrelationId());
 
             return Ok(result);
         }

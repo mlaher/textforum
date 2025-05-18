@@ -2,6 +2,6 @@
 {
     public interface IAppAuthenticationService
     {
-        bool AuthenticateApp(string appToken, string ipAddress, string machineIdentifier);
+        bool AuthenticateApp(string appToken, string ipAddress, string machineIdentifier, string correlationId);
     }
 }

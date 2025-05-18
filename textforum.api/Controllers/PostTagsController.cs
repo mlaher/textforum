@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using textforum.api.Helpers;
+using textforum.logic.helpers;
 using textforum.domain.interfaces;
 using textforum.domain.models;
 using textforum.logic.filters;
@@ -29,7 +29,7 @@ namespace textforum.api.Controllers
             int? pageSize,
             long postId)
         {
-            return Ok(await _postTagService.GetPostTags(postId, pageNumber, pageSize));
+            return Ok(await _postTagService.GetPostTags(postId, HttpContext.GetCorrelationId(), pageNumber, pageSize));
         }
 
         [ModeratorAuth]
@@ -40,9 +40,9 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-User-Token")] string userToken,
             PostTag postTag)
         {
-            postTag.UserId = HttpHelper.getUserId(this.HttpContext, postTag.UserId);
+            postTag.UserId = HttpContext.GetUserId(postTag.UserId);
 
-            var result = await _postTagService.AddPostTag(postTag);
+            var result = await _postTagService.AddPostTag(postTag, HttpContext.GetCorrelationId());
 
             return Ok(result);
         }

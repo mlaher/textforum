@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
 using textforum.domain.interfaces;
+using textforum.logic.helpers;
 
 namespace textforum.logic.filters
 {
@@ -10,9 +11,20 @@ namespace textforum.logic.filters
     public class AppAuthAttribute : Attribute, IAuthorizationFilter
     {
         private IAppAuthenticationService _appAuthenticationService = null;
+        public AppAuthAttribute()
+        {
+            
+        }
+
+        public AppAuthAttribute(IAppAuthenticationService appAuthenticationService)
+        {
+            _appAuthenticationService = appAuthenticationService;
+        }
 
         public virtual void OnAuthorization(AuthorizationFilterContext context)
         {
+            var correlationId = context.HttpContext.GetCorrelationId();
+
             if (_appAuthenticationService == null)
             {
                 _appAuthenticationService = context.HttpContext.RequestServices.GetService(typeof(IAppAuthenticationService)) as IAppAuthenticationService;
@@ -24,7 +36,7 @@ namespace textforum.logic.filters
             if (!isValidToken || string.IsNullOrWhiteSpace(token))
             {
                 // user not authorized, redirect to login page
-                context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                context.Result = new JsonResult(new { message = "Unauthorized", correlationId }) { StatusCode = StatusCodes.Status401Unauthorized };
 
                 return;
             }
@@ -43,10 +55,10 @@ namespace textforum.logic.filters
                 machineName = machineList != null ? machineList.Split(',').FirstOrDefault() : string.Empty;
             }
 
-            if (!_appAuthenticationService.AuthenticateApp(token, ip, machineName))
+            if (!_appAuthenticationService.AuthenticateApp(token, ip, machineName, correlationId))
             {
                 // user not authorized, redirect to login page
-                context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                context.Result = new JsonResult(new { message = "Unauthorized", correlationId }) { StatusCode = StatusCodes.Status401Unauthorized };
 
                 return;
             }

@@ -18,7 +18,7 @@ namespace textforum.logic.services
             _validApps = validApps.Value;
         }
 
-        public bool AuthenticateApp(string appToken, string ipAddress, string machineIdentifier)
+        public bool AuthenticateApp(string appToken, string ipAddress, string machineIdentifier, string correlationId)
         {
             if (!_validApps.Apps.ContainsKey(appToken))
                 return false;

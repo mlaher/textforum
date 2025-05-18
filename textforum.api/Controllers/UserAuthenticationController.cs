@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using textforum.logic.helpers;
 using textforum.domain.interfaces;
 using textforum.domain.models;
 using textforum.logic.filters;
@@ -26,7 +27,7 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-Machine-Name")] string machineName,
             [FromBody] Login credentials)
         {
-            var result = await _userAuthenticationService.AuthenticateUser(credentials.Email, credentials.Password);
+            var result = await _userAuthenticationService.AuthenticateUser(credentials.Email, credentials.Password, HttpContext.GetCorrelationId());
 
             if (!result.isValid)
                 return Unauthorized();
@@ -40,7 +41,7 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-Machine-Name")] string machineName,
             [FromBody] string userToken)
         {
-            var result = await _userAuthenticationService.GetClaims(userToken);
+            var result = await _userAuthenticationService.GetClaims(userToken, HttpContext.GetCorrelationId());
 
             return result.isValid;
         }
@@ -51,7 +52,7 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-Machine-Name")] string machineName,
             [FromBody] string userToken)
         {
-            var result = await _userAuthenticationService.GetClaims(userToken);
+            var result = await _userAuthenticationService.GetClaims(userToken, HttpContext.GetCorrelationId());
 
             if (!result.isValid)
                 return Unauthorized();

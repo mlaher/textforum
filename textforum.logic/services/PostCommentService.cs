@@ -17,7 +17,7 @@ namespace textforum.logic.services
             _postCommentRepository = postCommentRepository;
         }
 
-        public async Task<List<PostComment>> GetPostComments(long postId, int? pageNumber = 1, int? pageSize = 10, bool? latestFirst = true)
+        public async Task<List<PostComment>> GetPostComments(long postId, string correlationId, int? pageNumber = 1, int? pageSize = 10, bool? latestFirst = true)
         {
             if (pageSize == null)
                 pageSize = 10;
@@ -28,20 +28,25 @@ namespace textforum.logic.services
             if (latestFirst == null)
                 latestFirst = true;
 
-            var result = await _postCommentRepository.ListAsync(x => x.PostId == postId, o => o.Timestamp, pageNumber.Value, pageSize.Value, latestFirst.Value);
+            var result = await _postCommentRepository.ListAsync(x => x.PostId == postId, o => o.Timestamp, correlationId, pageNumber.Value, pageSize.Value, latestFirst.Value);
 
             return [.. result.Select(s => mapDataPostCommentToModelPostComment(s))];
         }
 
-        public async Task<PostComment> CreateComment(PostComment postComment)
+        public async Task<PostComment> CreateComment(PostComment postComment, string correlationId)
         {
+            if(string.IsNullOrWhiteSpace(postComment.Content))
+            {
+                throw new InvalidOperationException("Content cannot be blank");
+            }
+
             var result = await _postCommentRepository.AddAsync(new data.classes.PostComment()
             {
                 Content = postComment.Content,
                 PostId = postComment.PostId,
                 Timestamp = DateTimeOffset.Now,
                 UserId = postComment.UserId
-            });
+            }, correlationId);
 
             return mapDataPostCommentToModelPostComment(result);
         }

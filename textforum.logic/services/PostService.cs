@@ -23,7 +23,7 @@ namespace textforum.logic.services
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public async Task<List<Post>?> GetPosts(DateTimeOffset? startDate, DateTimeOffset? endDate, int? pageNumber = 1, int? pageSize = 10)
+        public async Task<List<Post>?> GetPosts(DateTimeOffset? startDate, DateTimeOffset? endDate, string correlationId, int? pageNumber = 1, int? pageSize = 10)
         {
             if (startDate == null)
                 startDate = DateTimeOffset.Now.AddDays(-7);
@@ -37,26 +37,26 @@ namespace textforum.logic.services
             if (pageNumber == null)
                 pageNumber = 1;
 
-            var results = await _postRepository.ListAsync(x => x.Timestamp >= startDate.Value && x.Timestamp <= endDate.Value, o => o.Timestamp, pageNumber.Value, pageSize.Value, true);
+            var results = await _postRepository.ListAsync(x => x.Timestamp >= startDate.Value && x.Timestamp <= endDate.Value, o => o.Timestamp, correlationId, pageNumber.Value, pageSize.Value, true);
 
             return [.. results.Select(s => mapDataPostToModelPost(s))];
         }
 
-        public async Task<Post> GetPost(long postId)
+        public async Task<Post> GetPost(long postId, string correlationId)
         {
-            var result = await _postRepository.GetAsync(postId);
+            var result = await _postRepository.GetAsync(correlationId, postId);
 
             return mapDataPostToModelPost(result);
         }
 
-        public async Task<Post> CreatePost(Post post)
+        public async Task<Post> CreatePost(Post post, string correlationId)
         {
             var result = await _postRepository.AddAsync(new data.classes.Post()
             {
                 Content = post.Content,
                 Timestamp = DateTimeOffset.Now,
                 UserId = post.UserId
-            });
+            }, correlationId);
 
             return mapDataPostToModelPost(result);
         }

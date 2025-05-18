@@ -17,7 +17,7 @@ namespace textforum.logic.services
             _postTagRepository = postTagRepository;
         }
 
-        public async Task<List<PostTag>> GetPostTags(long postId, int? pageNumber = 1, int? pageSize = 10)
+        public async Task<List<PostTag>> GetPostTags(long postId, string correlationId, int? pageNumber = 1, int? pageSize = 10)
         {
             if (pageSize == null)
                 pageSize = 10;
@@ -25,14 +25,14 @@ namespace textforum.logic.services
             if (pageNumber == null)
                 pageNumber = 1;
 
-            var result = await _postTagRepository.ListAsync(x => x.PostId == postId, o => o.Timestamp, pageNumber.Value, pageSize.Value, true);
+            var result = await _postTagRepository.ListAsync(x => x.PostId == postId, o => o.Timestamp, correlationId, pageNumber.Value, pageSize.Value, true);
 
             return [.. result.Select(s => mapDataPostTagToModelPostTag(s))];
         }
 
-        public async Task<PostTag> AddPostTag(PostTag postTag)
+        public async Task<PostTag> AddPostTag(PostTag postTag, string correlationId)
         {
-            var existingTag = await _postTagRepository.GetAsync(postTag.Tag, postTag.PostId);
+            var existingTag = await _postTagRepository.GetAsync(correlationId, postTag.Tag, postTag.PostId);
 
             if(existingTag == null)
             {
@@ -43,7 +43,7 @@ namespace textforum.logic.services
                     Description = postTag.Description,
                     Timestamp = DateTimeOffset.Now,
                     UserId = postTag.UserId
-                });
+                }, correlationId);
 
                 return mapDataPostTagToModelPostTag(result);
             }

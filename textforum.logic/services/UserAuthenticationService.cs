@@ -23,9 +23,9 @@ namespace textforum.logic.services
             _userService = userService;
         }
 
-        public async Task<(bool isValid, string token)> AuthenticateUser(string username, string password)
+        public async Task<(bool isValid, string token)> AuthenticateUser(string username, string password, string correlationId)
         {
-            var user = await _userService.GetFromCredentials(username, password);
+            var user = await _userService.GetFromCredentials(username, password, correlationId);
 
             if (user == null)
                 return (false, "");
@@ -43,7 +43,7 @@ namespace textforum.logic.services
             return (true, jwtToken);
         }
 
-        public async Task<(bool isValid, IDictionary<string, string?>? claims)> GetClaims(string jwt)
+        public async Task<(bool isValid, IDictionary<string, string?>? claims)> GetClaims(string jwt, string correlationId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var result = await tokenHandler.ValidateTokenAsync(jwt, GetValidationParameters());

@@ -1,6 +1,6 @@
 namespace textforum.tests
 {
-    public class UnitTest1
+    public class ApiTests
     {
         [Fact]
         public void Test1()

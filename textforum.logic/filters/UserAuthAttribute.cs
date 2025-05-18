@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using textforum.domain.interfaces;
+using textforum.logic.helpers;
 using textforum.logic.services;
 
 namespace textforum.logic.filters
@@ -16,9 +17,21 @@ namespace textforum.logic.filters
     {
         private IUserAuthenticationService _userAuthenticationService = null;
 
+        public UserAuthAttribute() : base()
+        {
+            
+        }
+
+        public UserAuthAttribute(IUserAuthenticationService userAuthenticationService, IAppAuthenticationService appAuthenticationService) : base(appAuthenticationService)
+        {
+            _userAuthenticationService = userAuthenticationService;
+        }
+
         public override async void OnAuthorization(AuthorizationFilterContext context)
         {
             base.OnAuthorization(context);
+
+            var correlationId = context.HttpContext.GetCorrelationId();
 
             var isValidToken = context.HttpContext.Request.Headers.TryGetValue("X-User-Token", out StringValues tokens);
             var token = tokens.FirstOrDefault();
@@ -26,7 +39,7 @@ namespace textforum.logic.filters
             if (!isValidToken || string.IsNullOrWhiteSpace(token))
             {
                 // user not authorized, redirect to login page
-                context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                context.Result = new JsonResult(new { message = "Unauthorized", correlationId }) { StatusCode = StatusCodes.Status401Unauthorized };
                 return;
             }
 
@@ -35,11 +48,11 @@ namespace textforum.logic.filters
                 _userAuthenticationService = context.HttpContext.RequestServices.GetService(typeof(IUserAuthenticationService)) as IUserAuthenticationService;
             }
 
-            var result = await _userAuthenticationService.GetClaims(token);
+            var result = await _userAuthenticationService.GetClaims(token, correlationId);
 
             if (!result.isValid)
             {
-                context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                context.Result = new JsonResult(new { message = "Unauthorized", correlationId = correlationId }) { StatusCode = StatusCodes.Status401Unauthorized };
                 return;
             }
 

@@ -6,11 +6,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using textforum.domain.interfaces;
 
 namespace textforum.logic.filters
 {
     public class ModeratorAuthAttribute : UserAuthAttribute
     {
+        public ModeratorAuthAttribute()
+        {
+            
+        }
+
+        public ModeratorAuthAttribute(IUserAuthenticationService userAuthenticationService, IAppAuthenticationService appAuthenticationService) : base(userAuthenticationService, appAuthenticationService) 
+        {
+            
+        }
+
         public override async void OnAuthorization(AuthorizationFilterContext context)
         {
             base.OnAuthorization(context);

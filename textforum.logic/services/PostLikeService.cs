@@ -17,13 +17,13 @@ namespace textforum.logic.services
             _postLikeRepository = postLikeRepository;
         }
 
-        public async Task ToggleLike(long postId, long userId)
+        public async Task ToggleLike(long postId, long userId, string correlationId)
         {
-            var existingLike = await _postLikeRepository.GetAsync(postId, userId);
+            var existingLike = await _postLikeRepository.GetAsync(correlationId, postId, userId);
 
             if (existingLike != null)
             {
-                await _postLikeRepository.DeleteAsync(existingLike);
+                await _postLikeRepository.DeleteAsync(existingLike, correlationId);
             }
             else
             {
@@ -32,11 +32,11 @@ namespace textforum.logic.services
                     PostId = postId,
                     UserId = userId,
                     Timestamp = DateTimeOffset.Now
-                });
+                }, correlationId);
             }
         }
 
-        public async Task<List<PostLike>> GetPostLikes(long postId, int? pageNumber = 1, int? pageSize = 10)
+        public async Task<List<PostLike>> GetPostLikes(long postId, string correlationId, int? pageNumber = 1, int? pageSize = 10)
         {
             if (pageSize == null)
                 pageSize = 10;
@@ -44,14 +44,14 @@ namespace textforum.logic.services
             if (pageNumber == null)
                 pageNumber = 1;
 
-            var results = await _postLikeRepository.ListAsync(a => a.PostId == postId, o => o.Timestamp, pageNumber.Value, pageSize.Value, true);
+            var results = await _postLikeRepository.ListAsync(a => a.PostId == postId, o => o.Timestamp, correlationId, pageNumber.Value, pageSize.Value, true);
 
             return [.. results.Select(s => mapDataPostLikeToModelPostLike(s))];
         }
 
-        public async Task<int> GetPostLikesCount(long postId)
+        public async Task<int> GetPostLikesCount(long postId, string correlationId)
         {
-            return await _postLikeRepository.GetCountAsync(a => a.PostId == postId);
+            return await _postLikeRepository.GetCountAsync(a => a.PostId == postId, correlationId);
         }
 
         private PostLike mapDataPostLikeToModelPostLike(data.classes.PostLike postLike)

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using textforum.api.Helpers;
+using textforum.logic.helpers;
 using textforum.domain.interfaces;
 using textforum.domain.models;
 using textforum.logic.filters;
@@ -21,7 +21,7 @@ namespace textforum.api.Controllers
         }
 
         [HttpGet("GetPostComments")]
-        public async Task<ActionResult<List<PostComment>>> GetPostsLikes([FromHeader(Name = "X-App-Token")] string appToken,
+        public async Task<ActionResult<List<PostComment>>> GetPostComments([FromHeader(Name = "X-App-Token")] string appToken,
             [FromHeader(Name = "X-Forwarded-For")] string ip,
             [FromHeader(Name = "X-Machine-Name")] string machineName,
             [FromHeader(Name = "X-User-Token")] string userToken,
@@ -29,7 +29,7 @@ namespace textforum.api.Controllers
             int? pageSize,
             long postId)
         {
-            return Ok(await _postCommentService.GetPostComments(postId, pageNumber, pageSize));
+            return Ok(await _postCommentService.GetPostComments(postId, HttpContext.GetCorrelationId(), pageNumber, pageSize));
         }
 
         [HttpPost("AddComment")]
@@ -39,9 +39,9 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-User-Token")] string userToken,
             PostComment comment)
         {
-            comment.UserId = HttpHelper.getUserId(this.HttpContext, comment.UserId);
+            comment.UserId = HttpContext.GetUserId(comment.UserId);
 
-            var result = await _postCommentService.CreateComment(comment);
+            var result = await _postCommentService.CreateComment(comment, HttpContext.GetCorrelationId());
 
             return Ok(result);
         }

@@ -22,7 +22,7 @@ namespace textforum.data.repositories
             _dbSet = textForumDatabaseContext.Set<T>();
         }
 
-        public async Task<List<T>> ListAsync(Expression<Func<T, bool>> filter, Expression<Func<T, object>> orderBy, int pageNumber = 1, int pageSize = 10, bool orderByDirectionDescending = false)
+        public async Task<List<T>> ListAsync(Expression<Func<T, bool>> filter, Expression<Func<T, object>> orderBy, string correlationId, int pageNumber = 1, int pageSize = 10, bool orderByDirectionDescending = false)
         {
             IQueryable<T> query = _dbSet;
 
@@ -48,12 +48,12 @@ namespace textforum.data.repositories
             return items;
         }
 
-        public async Task<T?> GetAsync(params object[] keys)
+        public async Task<T?> GetAsync(string correlationId, params object[] keys)
         {
             return await _dbSet.FindAsync(keys);
         }
 
-        public async Task<T?> AddAsync(T entity)
+        public async Task<T?> AddAsync(T entity, string correlationId)
         {
             await _dbSet.AddAsync(entity);
 
@@ -62,19 +62,19 @@ namespace textforum.data.repositories
             return entity;
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity, string correlationId)
         {
             _dbSet.Update(entity);
             await _textForumDatabaseContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity, string correlationId)
         {
             _dbSet.Remove(entity);
             await _textForumDatabaseContext.SaveChangesAsync();
         }
 
-        public async Task<int> GetCountAsync(Expression<Func<T, bool>> filter)
+        public async Task<int> GetCountAsync(Expression<Func<T, bool>> filter, string correlationId)
         {
             IQueryable<T> query = _dbSet;
 

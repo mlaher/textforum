@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using textforum.api.Helpers;
+using textforum.logic.helpers;
 using textforum.domain.interfaces;
 using textforum.domain.models;
 using textforum.logic.services;
@@ -26,7 +26,7 @@ namespace textforum.api.Controllers
             int? pageSize,
             long postId)
         {
-            return Ok(await _postLikeService.GetPostLikes(postId, pageNumber, pageSize));
+            return Ok(await _postLikeService.GetPostLikes(postId, HttpContext.GetCorrelationId(), pageNumber, pageSize));
         }
 
         [HttpGet("GetPostLikeCount")]
@@ -36,7 +36,7 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-User-Token")] string userToken,
             long postId)
         {
-            return Ok(await _postLikeService.GetPostLikesCount(postId));
+            return Ok(await _postLikeService.GetPostLikesCount(postId, HttpContext.GetCorrelationId()));
         }
 
         [HttpPost("ToggleUserLike")]
@@ -46,9 +46,9 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-User-Token")] string userToken,
             PostLike like)
         {
-            like.UserId = HttpHelper.getUserId(this.HttpContext, like.UserId);
+            like.UserId = HttpContext.GetUserId(like.UserId);
 
-            await _postLikeService.ToggleLike(like.PostId, like.UserId);
+            await _postLikeService.ToggleLike(like.PostId, like.UserId, HttpContext.GetCorrelationId());
             return Ok();
         }
 
