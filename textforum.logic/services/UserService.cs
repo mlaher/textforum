@@ -30,6 +30,9 @@ namespace textforum.logic.services
 
         public async Task<domain.models.User?> Register(domain.models.User user, string correlationId)
         {
+            if (!user.Email.IsValidEmailAddress())
+                throw new UserException(UserError.INVALID_EMAIL, correlationId);
+
             if (await UserExists(user.Email, correlationId))
                 throw new UserException(UserError.USER_EXISTS, correlationId);
 

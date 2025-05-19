@@ -26,6 +26,10 @@ namespace textforum.domain.errorHelpers
             {
                 UserError.USER_NOT_FOUND,
                 "Invalid user credendentials provided"
+            },
+            {
+                UserError.INVALID_EMAIL,
+                "Invalid email address provided"
             }
 
         };
