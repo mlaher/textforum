@@ -4,6 +4,7 @@ using textforum.logic.helpers;
 using textforum.domain.interfaces;
 using textforum.domain.models;
 using textforum.logic.filters;
+using textforum.domain.exceptions;
 
 namespace textforum.api.Controllers
 {
@@ -13,6 +14,7 @@ namespace textforum.api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
         public UserController(IUserService userService)
         {
@@ -25,9 +27,24 @@ namespace textforum.api.Controllers
             [FromHeader(Name = "X-Machine-Name")] string machineName,
             [FromBody] User user)
         {
-            var result = await _userService.Register(user, HttpContext.GetCorrelationId());
+            try
+            {
+                var result = await _userService.Register(user, HttpContext.GetCorrelationId());
 
-            return result;
+                return result;
+            }
+            catch (UserException ux)
+            {
+                _logger.LogError("Error Detail: {techError}", ux.GetTechnicalErrorDetails());
+                return BadRequest(ux.GetFriendlyErrorDetails());
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(new FriendlyError() { HasError=true, Message="An unknown exception has occurred. Please report.", 
+                CorrelationId = HttpContext.GetCorrelationId() });
+            }
+            
         }
     }
 }

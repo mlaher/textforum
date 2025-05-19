@@ -22,6 +22,10 @@ namespace textforum.domain.errorHelpers
             {
                 UserError.USER_EXISTS,
                 "This user being added already exists"
+            },
+            {
+                UserError.USER_NOT_FOUND,
+                "Invalid user credendentials provided"
             }
 
         };

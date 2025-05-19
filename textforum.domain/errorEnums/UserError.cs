@@ -10,6 +10,7 @@ namespace textforum.domain.errorEnums
     {
         INVALID_CREDENTIALS, 
         USER_NOT_SAVING,
-        USER_EXISTS
+        USER_EXISTS,
+        USER_NOT_FOUND
     }
 }

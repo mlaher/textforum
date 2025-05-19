@@ -47,7 +47,7 @@ namespace textforum.logic.services
             }, correlationId);
 
             if (result == null)
-                throw new InvalidOperationException("Error saving user");
+                throw new UserException(UserError.USER_NOT_SAVING, correlationId);
 
             return mapDataUserToModelUser(result);
         }
@@ -57,10 +57,10 @@ namespace textforum.logic.services
             var result = await searchByEmail(email, correlationId);
 
             if (result == null)
-                throw new InvalidOperationException("Invalid username or password");
+                throw new UserException(UserError.INVALID_CREDENTIALS, correlationId);
 
             if (!PasswordHashingHelper.PasswordIsValid(password, result.PasswordHashed, result.Salt))
-                throw new InvalidOperationException("Invalid username or password");
+                throw new UserException(UserError.INVALID_CREDENTIALS, correlationId);
 
             return mapDataUserToModelUser(result);
         }
@@ -70,7 +70,7 @@ namespace textforum.logic.services
             var result = await searchByEmail(email, correlationId);
 
             if (result == null)
-                throw new InvalidOperationException("Error retrieving user");
+                throw new UserException(UserError.USER_NOT_FOUND, correlationId);
 
             return mapDataUserToModelUser(result);
         }
@@ -80,7 +80,7 @@ namespace textforum.logic.services
             var result = await _userRepository.GetAsync(correlationId, userId);
 
             if (result == null)
-                throw new InvalidOperationException("Error retrieving user");
+                throw new UserException(UserError.USER_NOT_FOUND, correlationId);
 
             return mapDataUserToModelUser(result);
         }
