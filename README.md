@@ -3,14 +3,6 @@
 
 The forum is a basic text system which has the capabilities to add posts, retrieve posts, and like posts. Management does not believe in users editing or deleting existing posts, for ethical reasons.
 
-# Structure
-
-![onion diagram](image-4.png)
-
-# Database Structure
-
-![db structure](image.png)
-
 # Configuration (textforum.api appsettings.json)
 
 ```json
@@ -64,8 +56,6 @@ Open Package Manager Console in Visual Studio
 
 Change DefaultProject to textforum.data
 
-![package manager console change default](image-5.png)
-
 Since a migration is checked in the following command can be run (please ensure that the textforum.api is set as your startup project and also that you have a valid connection string)
 ```
 Update-Database
@@ -112,14 +102,10 @@ In swagger interface when its asks for the headers please fill in correct value
 2. X-Forwarded-For: The IP address as is on your config
 3. X-Machine-Name: The machine name as is on your config
 
-![swaggerheaders](image-6.png)
-
 ## 2. User Authentication
 
 > [!IMPORTANT]
 > A pre-requisite for user authentication is User Registration which uses App Authentication to authenticate, reCAPTCHA is highly recommended on your app side as well
-> 
-> ![swagger register user](image-7.png)
 
 The endpoints for user authentication and authorisation (These endpoint are protected by app authentication):
 
@@ -138,12 +124,9 @@ Given the token it will return all the claims for that token
 
 To authenticate user on endpoint that require user authentication please fill in the X-User-Token value which will be the JWT token returned by GetUserToken method
 
-![method with x-user-token required](image-8.png)
-
 > [!NOTE]
 > For the post tag add functionality a moderator user is required to be able to add tags
 > To create a moderator table you will need to set the isModerator boolean to true on the database table and then authenticate the user so the ismoderator claim can be added to JWT token, a new token will be required
-> ![add post tags method](image-9.png)
 
 # Important 
 
